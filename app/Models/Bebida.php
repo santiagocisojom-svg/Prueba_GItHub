@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Casts\PrecioCast;
 use App\Enums\TipoBebida;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Casts\Attribute;
-use Illuminate\Database\Eloquent\Builder;
-use App\Casts\PrecioCast;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Bebida extends Model
 {
@@ -26,8 +27,8 @@ class Bebida extends Model
     protected function casts(): array
     {
         return [
-            'tipo'      => TipoBebida::class,
-            'precio'    => PrecioCast::class,
+            'tipo' => TipoBebida::class,
+            'precio' => PrecioCast::class,
             'is_active' => 'boolean',
         ];
     }
@@ -36,13 +37,13 @@ class Bebida extends Model
     protected function nombre(): Attribute
     {
         return Attribute::make(
-            set: fn(string $value) => ucwords(trim($value))
+            set: fn (string $value) => ucwords(trim($value))
         );
     }
 
-    public function categoria(): BelongsTo
+    public function categorias(): BelongsToMany
     {
-        return $this->belongsTo(Categoria::class);
+        return $this->belongsToMany(Categoria::class);
     }
 
     public function user(): BelongsTo

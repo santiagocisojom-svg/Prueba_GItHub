@@ -20,15 +20,16 @@
                     </div>
 
                     <div>
-                        <x-input-label for="categoria_id" value="Categoría" />
-                        <select id="categoria_id" name="categoria_id" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <x-input-label for="categorias" value="Categorías" />
+                        <select id="categorias" name="categorias[]" multiple class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                             @foreach ($categorias as $categoria)
-                            <option value="{{ $categoria->id }}" {{ old('categoria_id', $bebida->categoria_id) == $categoria->id ? 'selected' : '' }}>
+                            <option value="{{ $categoria->id }}" {{ in_array($categoria->id, old('categorias', $bebida->categorias->pluck('id')->toArray())) ? 'selected' : '' }}>
                                 {{ $categoria->nombre }}
                             </option>
                             @endforeach
                         </select>
-                        <x-input-error :messages="$errors->get('categoria_id')" class="mt-2" />
+                        <x-input-error :messages="$errors->get('categorias')" class="mt-2" />
+                        <p class="mt-1 text-sm text-gray-500">Mantén presionado Ctrl (o Cmd en Mac) para seleccionar múltiples categorías.</p>
                     </div>
 
                     <div>

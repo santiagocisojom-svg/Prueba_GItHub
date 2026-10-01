@@ -41,7 +41,13 @@
                         @forelse ($bebidas as $bebida)
                         <tr>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $bebida->nombre }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $bebida->categoria->nombre }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">
+                                @foreach ($bebida->categorias as $categoria)
+                                    <span class="inline-block bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded mr-1 mb-1">
+                                        {{ $categoria->nombre }}
+                                    </span>
+                                @endforeach
+                            </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $bebida->tipo->value }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${{ $bebida->precio }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $bebida->stock }}</td>

@@ -36,13 +36,14 @@ class StoreBebidaRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nombre'       => ['required', 'string', 'max:100', 'unique:bebidas,nombre'],
-            'slug'         => ['required', 'string', 'max:120', 'unique:bebidas,slug'],
-            'tipo'         => ['required', Rule::enum(TipoBebida::class)], // Valida contra el Backed Enum
-            'precio'       => ['required', 'numeric', 'min:0.01', 'max:9999.99'],
-            'stock'        => ['required', 'integer', 'min:0'],
-            'categoria_id' => ['required', 'exists:categorias,id'],
-            'is_active'    => ['boolean'],
+            'nombre' => ['required', 'string', 'max:100', 'unique:bebidas,nombre'],
+            'slug' => ['required', 'string', 'max:120', 'unique:bebidas,slug'],
+            'tipo' => ['required', Rule::enum(TipoBebida::class)], // Valida contra el Backed Enum
+            'precio' => ['required', 'numeric', 'min:0.01', 'max:9999.99'],
+            'stock' => ['required', 'integer', 'min:0'],
+            'categorias' => ['required', 'array', 'min:1'],
+            'categorias.*' => ['exists:categorias,id'],
+            'is_active' => ['boolean'],
         ];
     }
 }

@@ -17,7 +17,7 @@ class UpdateBebidaRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $this->merge([
-            'slug'      => Str::slug($this->input('nombre')),
+            'slug' => Str::slug($this->input('nombre')),
             'is_active' => $this->boolean('is_active'),
         ]);
     }
@@ -33,19 +33,20 @@ class UpdateBebidaRequest extends FormRequest
                 'string',
                 'max:100',
                 // Ignora el ID de la bebida actual para evitar que la validación falle al no cambiar el nombre
-                Rule::unique('bebidas', 'nombre')->ignore($bebida?->id)
+                Rule::unique('bebidas', 'nombre')->ignore($bebida?->id),
             ],
             'slug' => [
                 'required',
                 'string',
                 'max:120',
-                Rule::unique('bebidas', 'slug')->ignore($bebida?->id)
+                Rule::unique('bebidas', 'slug')->ignore($bebida?->id),
             ],
-            'tipo'         => ['required', Rule::enum(TipoBebida::class)], // Valida contra el Enum[cite: 1]
-            'precio'       => ['required', 'numeric', 'min:0.01', 'max:9999.99'],
-            'stock'        => ['required', 'integer', 'min:0'],
-            'categoria_id' => ['required', 'exists:categorias,id'],
-            'is_active'    => ['boolean'],
+            'tipo' => ['required', Rule::enum(TipoBebida::class)], // Valida contra el Enum[cite: 1]
+            'precio' => ['required', 'numeric', 'min:0.01', 'max:9999.99'],
+            'stock' => ['required', 'integer', 'min:0'],
+            'categorias' => ['required', 'array', 'min:1'],
+            'categorias.*' => ['exists:categorias,id'],
+            'is_active' => ['boolean'],
         ];
     }
 }

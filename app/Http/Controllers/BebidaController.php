@@ -2,16 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\TipoBebida;
 use App\Http\Requests\StoreBebidaRequest;
 use App\Http\Requests\UpdateBebidaRequest;
 use App\Models\Bebida;
-use Illuminate\Http\Request;
-use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Support\Facades\Gate;
 use App\Models\Categoria;
-use App\Enums\TipoBebida;
-use App\Models\Factura;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class BebidaController extends Controller
 {
@@ -21,8 +18,7 @@ class BebidaController extends Controller
     public function index()
     {
         // Carga ansiosa ('with'), filtro reutilizable ('disponibles') y paginación
-        $bebidas = Bebida::with('categoria')
-
+        $bebidas = Bebida::with('categorias')
             ->latest()
             ->paginate(15);
 
@@ -43,9 +39,8 @@ class BebidaController extends Controller
     }
 
     /**
-     * FUNCION STORE MODIFICADA PARA 
+     * FUNCION STORE MODIFICADA PARA
      */
-
     public function store(StoreBebidaRequest $request)
     {
         // Obtenemos ÚNICAMENTE los datos validados[cite: 1]
@@ -55,17 +50,15 @@ class BebidaController extends Controller
         $datos['user_id'] = $request->user()->id;
 
         // Persistimos en la base de datos
+        $bebida = Bebida::create($datos);
 
-
-        Bebida::create($datos);
-
-
+        // Sincronizamos las categorías seleccionadas
+        $bebida->categorias()->sync($datos['categorias']);
 
         return redirect()
             ->route('admin.bebidas.index')
             ->with('status', 'Bebida registrada exitosamente.');
     }
-
 
     /**
      * Display the specified resource.
@@ -97,6 +90,9 @@ class BebidaController extends Controller
         // Actualizamos únicamente con los datos validados[cite: 1]
         $bebida->update($request->validated());
 
+        // Sincronizamos las categorías seleccionadas
+        $bebida->categorias()->sync($request->input('categorias'));
+
         return redirect()
             ->route('admin.bebidas.index')
             ->with('status', 'Bebida actualizada exitosamente.');
@@ -126,7 +122,7 @@ class BebidaController extends Controller
 
         // Filtro de búsqueda opcional por nombre
         if ($request->filled('buscar')) {
-            $query->where('nombre', 'like', '%' . $request->buscar . '%');
+            $query->where('nombre', 'like', '%'.$request->buscar.'%');
         }
 
         $bebidas = $query->orderBy('nombre', 'asc')->paginate(12);

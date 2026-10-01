@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Categoria extends Model
 {
@@ -11,8 +12,8 @@ class Categoria extends Model
         'descripcion',
     ];
 
-    public function bebidas()
+    public function bebidas(): BelongsToMany
     {
-        return $this->hasMany(Bebida::class);
+        return $this->belongsToMany(Bebida::class);
     }
 }
